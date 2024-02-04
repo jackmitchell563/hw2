@@ -15,16 +15,24 @@ std::string convToLower(std::string src)
     to a set of words based on the criteria given in the assignment **/
 std::set<std::string> parseStringToWords(string rawWords)
 {
-
-
-
-
-
-
-
-
-
-
+  set<string> s;
+  int currlen = 0, wordstart = 0;
+  for(unsigned int idx = 0; idx < rawWords.length(); idx++){
+    // check if the current char isn't punctuation or a space
+    if(!ispunct(rawWords[idx]) and !isspace(rawWords[idx])){
+      currlen++;
+    } else{ // add word to list if it's 2 characters or longer
+      if(currlen >= 2){
+        s.insert(convToLower(rawWords.substr(wordstart, currlen))); // convert to lowercase to make searching easier
+      }
+      wordstart = idx + 1; // set the starting index of the next word
+      currlen = 0; // reset current word length
+    }
+  }
+  if(currlen >= 2){ // need to check one more time since the loop terminates at the end of rawWords
+    s.insert(convToLower(rawWords.substr(wordstart, currlen)));
+  }
+  return s;
 }
 
 /**************************************************
