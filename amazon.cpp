@@ -105,7 +105,7 @@ int main(int argc, char* argv[])
                 string username, hit_result_index;
                 if(ss >> username){
                     username = convToLower(username);
-                    if(nullptr != ds.getUser(username)){
+                    if(nullptr != ds.getUser(username)){ // if user is in users_
                         if(ss >> hit_result_index){
                             unsigned int hitdex = stoi(hit_result_index);
                             if(hitdex <= hits.size() and hitdex > 0){ // 1-based indexing
@@ -120,8 +120,8 @@ int main(int argc, char* argv[])
                 if(ss >> username){
                     username = convToLower(username);
                     if(nullptr != ds.getUser(username)){
-                        vector<Product*> usercart = ds.getCartMap()[username];
-                        int resultNo = 1;
+                        vector<Product*> usercart = ds.getCartMap()[username]; // get the user's cart
+                        int resultNo = 1; // copied the format of displayProducts, but used the word "Item" instead of "Hit"
                         for(vector<Product*>::iterator it = usercart.begin(); it != usercart.end(); ++it) {
                             cout << "Item " << setw(3) << resultNo << endl;
                             cout << (*it)->displayString() << endl;
@@ -137,15 +137,15 @@ int main(int argc, char* argv[])
                     username = convToLower(username);
                     if(nullptr != ds.getUser(username)){
                         vector<Product*> usercart = ds.getCartMap()[username];
-                        vector<int> to_remove;
+                        vector<int> to_remove; // store list of indices in usercart to remove
                         for(unsigned int i = 0; i < usercart.size(); i++){
                             if(usercart[i]->getQty() and ds.getUser(username)->getBalance() >= usercart[i]->getPrice()){
                                 usercart[i]->subtractQty(1);
                                 ds.getUser(username)->deductAmount(usercart[i]->getPrice());
-                                to_remove.push_back(i);
+                                to_remove.push_back(i); // add to list of removal indices, but don't remove since we're currently iterating through usercart
                             }
                         }
-                        for(int i = to_remove.size() - 1; i >= 0; i--){
+                        for(int i = to_remove.size() - 1; i >= 0; i--){ // iterate backwards so that lower-index removals don't affect higher indices
                             ds.removeFromCart(username, to_remove[i]);
                         }
                     } else cout << "Invalid username" << endl;

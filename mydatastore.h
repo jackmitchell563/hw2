@@ -15,9 +15,9 @@ class MyDataStore : public DataStore{
     void addProduct(Product* p);
     void addUser(User* u);
     void addToCart(std::string user, Product* product);
-    void removeFromCart(std::string user, int pos){cartmap_[user].erase(cartmap_[user].begin() + pos);}
+    void removeFromCart(std::string user, int pos){ cartmap_[user].erase(cartmap_[user].begin() + pos); }
     std::map<std::string, std::vector<Product*> > getCartMap() const {return cartmap_;}
-    User* getUser(std::string username) {if(users_.find(username) != users_.end()) return users_[username]; return nullptr;}
+    User* getUser(std::string username) { if(users_.find(username) != users_.end()) return users_[username]; return nullptr; } // return a user from their username, or nullptr if they aren't in users_
     std::vector<Product*> search(std::vector<std::string>& terms, int type);
     void dump(std::ostream& os);
   private:

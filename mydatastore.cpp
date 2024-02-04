@@ -4,7 +4,7 @@
 #include<iostream>
 using namespace std;
 
-MyDataStore::~MyDataStore(){
+MyDataStore::~MyDataStore(){ // deallocate products and users
   vector<Product*>::iterator it;
   for(it = products_.begin(); it != products_.end(); it++)
     delete *it;
@@ -14,10 +14,10 @@ MyDataStore::~MyDataStore(){
 }
 
 void MyDataStore::addProduct(Product* p){
-  products_.push_back(p);
-  set<string> pkwords = p->keywords();
+  products_.push_back(p); // add to list of products
+  set<string> pkwords = p->keywords(); // get the product's keywords
   set<string>::iterator it;
-  for(it = pkwords.begin(); it != pkwords.end(); it++){
+  for(it = pkwords.begin(); it != pkwords.end(); it++){ // map each keyword to corresponding products
     if(keywordmap_.find(*it) == keywordmap_.end()){ // if the key isn't in keywordmap_ yet
       set<Product*> initset({p});
       keywordmap_[*it] = initset;
@@ -46,7 +46,7 @@ void MyDataStore::addToCart(string user, Product* product){
 std::vector<Product*> MyDataStore::search(std::vector<std::string>& terms, int type){
   vector<Product*> returnvec;
   vector<string>::iterator it = terms.begin();
-  set<Product*> runningset({keywordmap_[*it]}); // initialize with the first term's mapped products
+  set<Product*> runningset({keywordmap_[*it]}); // initialize with the first term's mapped products since intersection with an empty set yields an empty set
   if(type == 0){ // AND search
     for(it++; it != terms.end(); it++){ // start from the second term since the first one's already been included
       runningset = setIntersection(runningset, keywordmap_[*it]); // iterate through and find the intersection of all terms' product sets
@@ -57,19 +57,19 @@ std::vector<Product*> MyDataStore::search(std::vector<std::string>& terms, int t
     }
   }
   set<Product*>::iterator it2;
-  for(it2 = runningset.begin(); it2 != runningset.end(); it2++)
+  for(it2 = runningset.begin(); it2 != runningset.end(); it2++) // add all the search results to a vector since that's what we're returning
     returnvec.push_back(*it2);
   return returnvec;
 }
 void MyDataStore::dump(std::ostream& os){
   os << "<products>\n";
-  for(unsigned int i = 0; i < products_.size(); i++){
+  for(unsigned int i = 0; i < products_.size(); i++){ // dump products
     products_[i]->dump(os);
   }
   os << "</products>\n";
   os << "<users>\n";
   map<string, User*>::iterator it;
-  for(it = users_.begin(); it != users_.end(); it++){
+  for(it = users_.begin(); it != users_.end(); it++){ // dump users
     (*it).second->dump(os);
   }
   os << "</users>\n";
